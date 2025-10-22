@@ -58,7 +58,7 @@ CREATE TABLE Developers.Developers (
 	Website VARCHAR(255),
 	FoundedAt DATE NOT NULL DEFAULT GETDATE(),
 
-	CONSTRAINT PK_Developers_DeveloperId PRIMARY KEY(DeveloperId)
+	CONSTRAINT PK_Developers_DeveloperId PRIMARY KEY(DeveloperId),
 	CONSTRAINT FK_Developers_Accounts_AccountId FOREIGN KEY(AccountId) REFERENCES Accounts.Accounts(AccountId) ON DELETE CASCADE
 );
 
