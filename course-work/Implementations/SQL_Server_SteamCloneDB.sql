@@ -31,10 +31,10 @@ GO
 CREATE TABLE Accounts.Accounts (
 	AccountId INT IDENTITY(1, 1) NOT NULL,
 	Email VARCHAR(255) NOT NULL UNIQUE,
-	PasswordHash VARCHAR(255) NOT NULL,
-	Country VARCHAR(255),
 	[Role] VARCHAR(32) NOT NULL DEFAULT 'User',
 	CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+	PasswordHash VARCHAR(255) NOT NULL,
+	Country VARCHAR(255),
 
 	CONSTRAINT PK_Accounts_AccountId PRIMARY KEY(AccountId)
 );
@@ -44,7 +44,6 @@ CREATE TABLE Users.Users (
 	AccountId INT NOT NULL,
 	Username VARCHAR(255) NOT NULL UNIQUE,
 	DateOfBirth DATE,
-	JoinedDate DATE NOT NULL DEFAULT GETDATE(),
 	WalletBalance DECIMAL(16, 4) NOT NULL DEFAULT 0,
 
 	CONSTRAINT PK_Users_UserId PRIMARY KEY(UserId),
@@ -53,11 +52,14 @@ CREATE TABLE Users.Users (
 
 CREATE TABLE Developers.Developers (
 	DeveloperId INT IDENTITY(1, 1) NOT NULL,
+	AccountId INT NOT NULL,
+
 	StudioName VARCHAR(255) NOT NULL UNIQUE,
 	Website VARCHAR(255),
 	FoundedAt DATE NOT NULL DEFAULT GETDATE(),
 
-	CONSTRAINT PK_Developers_DeveloperId PRIMARY KEY(DeveloperId)
+	CONSTRAINT PK_Developers_DeveloperId PRIMARY KEY(DeveloperId),
+	CONSTRAINT FK_Developers_Accounts_AccountId FOREIGN KEY(AccountId) REFERENCES Accounts.Accounts(AccountId) ON DELETE CASCADE
 );
 
 CREATE TABLE Publishers.Publishers (
@@ -72,7 +74,7 @@ CREATE TABLE Publishers.Publishers (
 );
 
 CREATE TABLE Games.Games (
-    GameId INT IDENTITY(1,1) NOT NULL,
+  GameId INT IDENTITY(1,1) NOT NULL,
 	[Name] VARCHAR(255) NOT NULL,
 	Price DECIMAL(16, 4) NOT NULL DEFAULT 0,
 	ReleaseDate DATE NOT NULL DEFAULT GETDATE(),
@@ -84,7 +86,6 @@ CREATE TABLE Games.Games (
 	PublisherId INT NOT NULL,
 
 	CONSTRAINT CK_Games_Price CHECK (Price >= 0),
-	
 	CONSTRAINT PK_Games_GameId PRIMARY KEY (GameId),
 	CONSTRAINT FK_Games_Developers_DeveloperId FOREIGN KEY(DeveloperId) REFERENCES Developers.Developers(DeveloperId),
 	CONSTRAINT FK_Games_Publishers_PublisherId FOREIGN KEY(PublisherId) REFERENCES Publishers.Publishers(PublisherId)
